@@ -6,16 +6,16 @@ import { hexName, hexJudg, hexImg } from "../domain/trigrams.js";
 // view. The Bản quẻ has its own larger panel with trigram summaries.
 export default function HexDetailCard({ hex, t, lang, label, labelZh }) {
   return (
-    <div className="bg-white border border-stone-300 rounded p-5 mb-4">
-      <div className="flex items-start gap-5">
+    <div className="bg-white border border-stone-300 rounded p-4 sm:p-5 mb-4">
+      <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
         <div className="flex-shrink-0">
           <HexLines upper={hex.upper} lower={hex.lower} size="lg" />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 w-full min-w-0">
           <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">
             {label} · <span className="font-serif" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{labelZh}</span> · 第 {hex.n} 卦
           </div>
-          <div className="flex items-baseline gap-3 mb-1">
+          <div className="flex items-baseline gap-3 mb-1 flex-wrap">
             <span className="text-3xl font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{hex.zh}</span>
             <span className="text-stone-600 italic">{hex.py}</span>
           </div>

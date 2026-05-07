@@ -69,7 +69,7 @@ export default function AuthBar({ t }) {
           <input type="email" value={email} onChange={e => setEmail(e.target.value)}
             placeholder={t.auth.emailPh}
             disabled={status === "sending"}
-            className="text-[11px] px-2 py-0.5 border border-stone-300 focus:border-rose-900 outline-none rounded bg-white w-44"
+            className="text-[11px] px-2 py-0.5 border border-stone-300 focus:border-rose-900 outline-none rounded bg-white w-32 sm:w-44"
             autoFocus />
           <button type="submit" disabled={status === "sending"}
             className="text-[11px] px-2 py-0.5 rounded bg-stone-900 text-stone-50 hover:bg-rose-900 transition-colors disabled:opacity-60">

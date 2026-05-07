@@ -70,11 +70,11 @@ export default function HistoryView({ t, lang }) {
   }
 
   if (entries === null) {
-    return <div className="max-w-3xl mx-auto px-6 py-8 text-stone-500 text-sm">{labels.loading}</div>;
+    return <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8 text-stone-500 text-sm">{labels.loading}</div>;
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <div className="flex items-baseline justify-between mb-6 gap-4">
         <h2 className="text-2xl font-serif text-stone-900">{labels.title}</h2>
         {entries.length > 0 && (

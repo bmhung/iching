@@ -93,7 +93,7 @@ export default function CastView({ t, lang, reading, setReading }) {
   ];
 
   return (
-    <div className="max-w-2xl mx-auto px-6 py-8">
+    <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h2 className="text-2xl font-serif text-stone-900 mb-6">{t.cast.title}</h2>
 
       {!method && (

@@ -16,15 +16,15 @@ export default function RefView({ t, lang }) {
     const oppositeHex = getHex(oppositeCoords.upper, oppositeCoords.lower);
     const inverseHex  = getHex(inverseCoords.upper,  inverseCoords.lower);
     return (
-      <div className="max-w-2xl mx-auto px-6 py-8">
+      <div className="max-w-2xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <button onClick={() => setSelected(null)} className="text-sm text-stone-600 hover:text-rose-900 mb-5">{t.ref.back}</button>
 
-        <div className="bg-white border border-stone-300 rounded p-6 mb-4">
-          <div className="flex items-start gap-5 mb-4">
+        <div className="bg-white border border-stone-300 rounded p-4 sm:p-6 mb-4">
+          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5 mb-4">
             <HexLines upper={hex.upper} lower={hex.lower} size="lg" />
-            <div className="flex-1">
+            <div className="flex-1 w-full min-w-0">
               <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">第 {hex.n} 卦</div>
-              <div className="flex items-baseline gap-3 mb-1">
+              <div className="flex items-baseline gap-3 mb-1 flex-wrap">
                 <span className="text-3xl font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{hex.zh}</span>
                 <span className="text-stone-600 italic">{hex.py}</span>
               </div>
@@ -88,7 +88,7 @@ export default function RefView({ t, lang }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-8">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h2 className="text-2xl font-serif text-stone-900 mb-6">{t.ref.title}</h2>
 
       <div className="flex flex-wrap gap-3 mb-5 items-center">

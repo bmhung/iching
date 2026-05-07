@@ -26,22 +26,22 @@ export default function App() {
       color: "#1c1410",
     }}>
       <header className="border-b border-stone-300/60 backdrop-blur-sm sticky top-0 z-10" style={{background:"rgba(247,241,227,0.85)"}}>
-        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-          <button onClick={() => { setView("home"); setReading(null); }} className="flex items-center gap-3 group">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between gap-2">
+          <button onClick={() => { setView("home"); setReading(null); }} className="flex items-center gap-3 group min-w-0">
             <PlumBlossom size={28} />
-            <div className="text-left">
-              <div className="text-base font-serif text-stone-900 leading-tight" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>
+            <div className="text-left min-w-0">
+              <div className="text-base font-serif text-stone-900 leading-tight truncate" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>
                 {t.title}
               </div>
-              <div className="text-[10px] uppercase tracking-widest text-stone-500">{t.subtitle}</div>
+              <div className="text-[10px] uppercase tracking-widest text-stone-500 truncate hidden sm:block">{t.subtitle}</div>
             </div>
           </button>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
             <AuthBar t={t} />
             <div className="flex gap-1 text-xs">
               {langOptions.map(o => (
                 <button key={o.code} onClick={() => setLang(o.code)}
-                  className={`px-2.5 py-1 rounded transition-colors ${lang === o.code ? "bg-stone-900 text-stone-50" : "text-stone-600 hover:text-stone-900"}`}>
+                  className={`px-2 sm:px-2.5 py-1 rounded transition-colors ${lang === o.code ? "bg-stone-900 text-stone-50" : "text-stone-600 hover:text-stone-900"}`}>
                   {o.label}
                 </button>
               ))}
@@ -49,7 +49,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="max-w-5xl mx-auto px-6 flex gap-1 border-t border-stone-200 overflow-x-auto">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex gap-1 border-t border-stone-200 overflow-x-auto">
           {[
             { id: "home",    label: t.nav.home },
             { id: "cast",    label: t.nav.cast },

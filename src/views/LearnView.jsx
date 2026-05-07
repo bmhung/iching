@@ -3,7 +3,7 @@ import { TRIGRAMS, trigName, trigAttr, trigFam, trigDir } from "../domain/trigra
 
 export default function LearnView({ t, lang }) {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <h2 className="text-2xl font-serif text-stone-900 mb-8">{t.learn.title}</h2>
 
       <section className="mb-10">

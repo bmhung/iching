@@ -31,18 +31,18 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
     : "—";
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <div>
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div className="min-w-0">
           <div className="text-xs uppercase tracking-widest text-stone-500 mb-1">{t.result.yourReading}</div>
-          <div className="flex items-center gap-2 text-sm text-stone-600">
+          <div className="flex items-baseline gap-2 text-sm text-stone-600 flex-wrap">
             <span>{t.result.method}:</span>
             <span className="text-stone-900">{t.result.methodNames[reading.method]}</span>
             <span className="text-stone-300">·</span>
-            <span className="text-stone-700">{inputsLine}</span>
+            <span className="text-stone-700 break-words">{inputsLine}</span>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-shrink-0">
           <CopyForAIButton reading={reading} lang={lang} t={t} />
           <button onClick={onAgain} className="text-xs px-3 py-1.5 border border-stone-400 hover:border-rose-900 hover:text-rose-900 rounded transition-colors">
             {t.cast.again}
@@ -81,20 +81,20 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
         <HexCard hex={transformedHex} lang={lang} label={t.result.transformed} labelZh={t.result.transformedZh} desc={t.result.transformedDesc} />
       </div>
 
-      <div className="bg-white border border-stone-300 rounded p-5 mb-4">
-        <div className="flex items-start gap-5">
+      <div className="bg-white border border-stone-300 rounded p-4 sm:p-5 mb-4">
+        <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-5">
           <div className="flex-shrink-0">
             <HexLines upper={upper} lower={lower} changingLine={changingLine} size="lg" />
           </div>
-          <div className="flex-1">
+          <div className="flex-1 w-full min-w-0">
             <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">{t.result.original} · 第 {originalHex.n} 卦</div>
-            <div className="flex items-baseline gap-3 mb-1">
+            <div className="flex items-baseline gap-3 mb-1 flex-wrap">
               <span className="text-3xl font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{originalHex.zh}</span>
               <span className="text-stone-600 italic">{originalHex.py}</span>
             </div>
             <div className="text-stone-800 mb-3">{hexName(originalHex, lang)}</div>
 
-            <div className="grid grid-cols-2 gap-3 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
               <TrigramSummary trigramNumber={upper} label={t.result.upper} t={t} lang={lang} />
               <TrigramSummary trigramNumber={lower} label={t.result.lower} t={t} lang={lang} />
             </div>

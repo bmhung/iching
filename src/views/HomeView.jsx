@@ -2,7 +2,7 @@ import PlumBlossom from "../components/PlumBlossom.jsx";
 
 export default function HomeView({ t, setView }) {
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
       <div className="text-center mb-10">
         <div className="flex justify-center mb-4">
           <PlumBlossom size={48} />
