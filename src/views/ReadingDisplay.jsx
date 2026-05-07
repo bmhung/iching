@@ -1,9 +1,9 @@
 import HexLines from "../components/HexLines.jsx";
 import HexCard from "../components/HexCard.jsx";
-import TrigramLines from "../components/TrigramLines.jsx";
 import TrigramSummary from "../components/TrigramSummary.jsx";
 import CastCalculation from "../components/CastCalculation.jsx";
-import { getHex, hexName, hexJudg, hexImg, trigName } from "../domain/trigrams.js";
+import TiYongPanel from "../components/TiYongPanel.jsx";
+import { getHex, hexName, hexJudg, hexImg } from "../domain/trigrams.js";
 import { getNuclear, getTransformed, tiYongAnalysis } from "../domain/analysis.js";
 
 export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }) {
@@ -13,16 +13,11 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
   const huHex = getHex(nuc.u, nuc.l);
   const trans = getTransformed(u, l, change);
   const bienHex = getHex(trans.u, trans.l);
-  const ty = tiYongAnalysis(u, l, change);
-
-  const outcomeText = ty.outcome === "favorable" ? t.result.favorable
-                    : ty.outcome === "unfavorable" ? t.result.unfavorable
-                    : ty.outcome === "less" ? t.result.less
-                    : t.result.neutral;
-  const outcomeColor = ty.outcome === "favorable" ? "bg-emerald-50 border-emerald-700 text-emerald-900"
-                     : ty.outcome === "unfavorable" ? "bg-rose-50 border-rose-700 text-rose-900"
-                     : ty.outcome === "less" ? "bg-amber-50 border-amber-700 text-amber-900"
-                     : "bg-stone-100 border-stone-500 text-stone-800";
+  const tyBen = tiYongAnalysis(u, l, change);
+  // Ti-Yong of the transformed: same Ti/Yong positions (the changing line
+  // position is unchanged), but the Yong trigram has flipped → new element
+  // relationship → represents how the situation evolves.
+  const tyBien = tiYongAnalysis(trans.u, trans.l, change);
 
   const inputsLine = reading.method === "time"
     ? `${t.branches[reading.inputs.yearBranch - 1]}年 · ${reading.inputs.month}月 · ${reading.inputs.day}日 · ${t.branches[reading.inputs.chHour - 1]}時`
@@ -124,48 +119,9 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
         <div className="text-sm text-stone-700">{t.result.lineMeanings[change - 1]}</div>
       </div>
 
-      <div className={`border-l-4 ${outcomeColor.split(' ').filter(c => c.startsWith('border-')).join(' ')} bg-white border border-stone-300 rounded p-5`}>
-        <h3 className="text-base font-serif text-stone-900 mb-4">{t.result.tiYong} · 體用論斷</h3>
-
-        <div className="text-xs text-stone-600 mb-4 italic">
-          {ty.yongIsLower ? t.result.yongInLower : t.result.yongInUpper}
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-5">
-          <div className="bg-stone-50 border border-stone-300 rounded p-3">
-            <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">{t.result.ti} · 體 · {t.result.tiSub}</div>
-            <div className="flex items-center gap-2 mb-2">
-              <TrigramLines n={ty.ti} size="sm" />
-              <div>
-                <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{ty.tiT.zh} {ty.tiT.sym}</div>
-                <div className="text-xs text-stone-600">{trigName(ty.tiT, lang)}</div>
-              </div>
-            </div>
-            <div className="text-xs text-stone-600">
-              <span className="text-rose-900">{t.elements[ty.tiT.el]}</span>
-            </div>
-          </div>
-
-          <div className="bg-stone-50 border border-stone-300 rounded p-3">
-            <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">{t.result.yong} · 用 · {t.result.yongSub}</div>
-            <div className="flex items-center gap-2 mb-2">
-              <TrigramLines n={ty.yong} size="sm" />
-              <div>
-                <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{ty.yongT.zh} {ty.yongT.sym}</div>
-                <div className="text-xs text-stone-600">{trigName(ty.yongT, lang)}</div>
-              </div>
-            </div>
-            <div className="text-xs text-stone-600">
-              <span className="text-rose-900">{t.elements[ty.yongT.el]}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={`p-4 border ${outcomeColor} rounded`}>
-          <div className="text-[10px] uppercase tracking-widest mb-1 opacity-70">{t.result.relation}</div>
-          <div className="font-medium mb-2">{outcomeText}</div>
-          <div className="text-sm leading-relaxed">{t.rel[ty.rel]}</div>
-        </div>
+      <div className="space-y-4">
+        <TiYongPanel analysis={tyBen}  t={t} lang={lang} label={t.result.ben}  labelZh={t.result.benZh} />
+        <TiYongPanel analysis={tyBien} t={t} lang={lang} label={t.result.bien} labelZh={t.result.bienZh} />
       </div>
     </div>
   );
