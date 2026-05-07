@@ -119,10 +119,15 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
         <div className="text-sm text-stone-700">{t.result.lineMeanings[change - 1]}</div>
       </div>
 
-      <div className="space-y-4">
-        <TiYongPanel analysis={tyBen}  t={t} lang={lang} label={t.result.ben}  labelZh={t.result.benZh} />
-        <TiYongPanel analysis={tyBien} t={t} lang={lang} label={t.result.bien} labelZh={t.result.bienZh} />
-      </div>
+      <TiYongPanel
+        t={t}
+        lang={lang}
+        yongIsLower={tyBen.yongIsLower}
+        sections={[
+          { label: t.result.ben,  labelZh: t.result.benZh,  analysis: tyBen  },
+          { label: t.result.bien, labelZh: t.result.bienZh, analysis: tyBien },
+        ]}
+      />
     </div>
   );
 }
