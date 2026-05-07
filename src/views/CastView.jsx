@@ -13,11 +13,11 @@ export default function CastView({ t, lang, reading, setReading }) {
   const [question, setQuestion] = useState("");
   const [error, setError] = useState("");
   const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved' | 'error' | 'no-storage'
-  const _now = new Date();
-  const [year, setYear] = useState(_now.getFullYear());
-  const [month, setMonth] = useState(_now.getMonth() + 1);
-  const [day, setDay] = useState(_now.getDate());
-  const [hour, setHour] = useState(_now.getHours());
+  const initialNow = new Date();
+  const [year, setYear]   = useState(initialNow.getFullYear());
+  const [month, setMonth] = useState(initialNow.getMonth() + 1);
+  const [day, setDay]     = useState(initialNow.getDate());
+  const [hour, setHour]   = useState(initialNow.getHours());
   const [calendar, setCalendar] = useState("solar");
 
   const dtLabels = ({
@@ -27,9 +27,9 @@ export default function CastView({ t, lang, reading, setReading }) {
   })[lang];
 
   function resetNow() {
-    const n = new Date();
-    setYear(n.getFullYear()); setMonth(n.getMonth() + 1);
-    setDay(n.getDate()); setHour(n.getHours());
+    const now = new Date();
+    setYear(now.getFullYear()); setMonth(now.getMonth() + 1);
+    setDay(now.getDate()); setHour(now.getHours());
     setCalendar("solar");
   }
 
@@ -37,36 +37,40 @@ export default function CastView({ t, lang, reading, setReading }) {
   let lunarPreview = null;
   if (calendar === "solar" && method === "time") {
     try {
-      const y = parseInt(year), m = parseInt(month), d = parseInt(day);
-      if (Number.isFinite(y) && y > 1800 && y < 2300 && m >= 1 && m <= 12 && d >= 1 && d <= 31) {
-        lunarPreview = solarToLunar(d, m, y, 7);
+      const parsedYear = parseInt(year), parsedMonth = parseInt(month), parsedDay = parseInt(day);
+      if (Number.isFinite(parsedYear) && parsedYear > 1800 && parsedYear < 2300 && parsedMonth >= 1 && parsedMonth <= 12 && parsedDay >= 1 && parsedDay <= 31) {
+        lunarPreview = solarToLunar(parsedDay, parsedMonth, parsedYear, 7);
       }
     } catch {}
   }
 
   function doCast() {
     setError("");
-    let r = null;
+    let castResult = null;
     if (method === "time") {
-      const y = parseInt(year), m = parseInt(month), d = parseInt(day), h = parseInt(hour);
-      if (!Number.isFinite(y) || !Number.isFinite(m) || !Number.isFinite(d) || !Number.isFinite(h) ||
-          m < 1 || m > 12 || d < 1 || d > 31 || h < 0 || h > 23) {
+      const parsedYear  = parseInt(year);
+      const parsedMonth = parseInt(month);
+      const parsedDay   = parseInt(day);
+      const parsedHour  = parseInt(hour);
+      if (!Number.isFinite(parsedYear) || !Number.isFinite(parsedMonth) || !Number.isFinite(parsedDay) || !Number.isFinite(parsedHour) ||
+          parsedMonth < 1 || parsedMonth > 12 || parsedDay < 1 || parsedDay > 31 || parsedHour < 0 || parsedHour > 23) {
         setError(t.cast.enterNums); return;
       }
-      r = castTime(y, m, d, h, calendar === "lunar");
+      castResult = castTime(parsedYear, parsedMonth, parsedDay, parsedHour, calendar === "lunar");
     } else if (method === "number") {
-      const a = parseInt(n1), b = parseInt(n2);
-      if (!a || !b || a < 1 || b < 1) { setError(t.cast.enterNums); return; }
-      r = castNumber(a, b);
+      const firstNumber  = parseInt(n1);
+      const secondNumber = parseInt(n2);
+      if (!firstNumber || !secondNumber || firstNumber < 1 || secondNumber < 1) { setError(t.cast.enterNums); return; }
+      castResult = castNumber(firstNumber, secondNumber);
     } else if (method === "sound") {
-      r = castSound(text);
-      if (!r) { setError(t.cast.tooShort); return; }
-    } else if (method === "spont") r = castSpont();
-    if (r) {
-      r.question = question;
-      setReading(r);
+      castResult = castSound(text);
+      if (!castResult) { setError(t.cast.tooShort); return; }
+    } else if (method === "spont") castResult = castSpont();
+    if (castResult) {
+      castResult.question = question;
+      setReading(castResult);
       setSaveStatus('saving');
-      saveReading(r).then(res => {
+      saveReading(castResult).then(res => {
         setSaveStatus(res.ok ? 'saved' : res.reason);
         if (res.ok) notifyLocalWrite();
       });
@@ -82,10 +86,10 @@ export default function CastView({ t, lang, reading, setReading }) {
   if (reading) return <ReadingDisplay t={t} lang={lang} reading={reading} onAgain={reset} saveStatus={saveStatus} />;
 
   const methods = [
-    { id: "time", icon: "時", title: t.cast.time, zh: t.cast.timeZh, desc: t.cast.timeDesc },
+    { id: "time",   icon: "時", title: t.cast.time,   zh: t.cast.timeZh,   desc: t.cast.timeDesc   },
     { id: "number", icon: "數", title: t.cast.number, zh: t.cast.numberZh, desc: t.cast.numberDesc },
-    { id: "sound", icon: "聲", title: t.cast.sound, zh: t.cast.soundZh, desc: t.cast.soundDesc },
-    { id: "spont", icon: "應", title: t.cast.spont, zh: t.cast.spontZh, desc: t.cast.spontDesc },
+    { id: "sound",  icon: "聲", title: t.cast.sound,  zh: t.cast.soundZh,  desc: t.cast.soundDesc  },
+    { id: "spont",  icon: "應", title: t.cast.spont,  zh: t.cast.spontZh,  desc: t.cast.spontDesc  },
   ];
 
   return (

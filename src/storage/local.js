@@ -34,13 +34,45 @@ export function isStorageAvailable() {
   }
 }
 
+// Migrate an entry from the legacy reading shape ({u, l, change, inputs.chHour})
+// to the current one ({upper, lower, changingLine, inputs.hourBranch}).
+// No-op when the entry is already current.
+function _migrateEntry(entry) {
+  if (!entry || !entry.data) return entry;
+  const reading = entry.data;
+  const needsHexRename   = reading.u !== undefined && reading.upper === undefined;
+  const needsHourRename  = reading.inputs && reading.inputs.chHour !== undefined && reading.inputs.hourBranch === undefined;
+  if (!needsHexRename && !needsHourRename) return entry;
+
+  const next = { ...reading };
+  if (needsHexRename) {
+    next.upper        = reading.u;
+    next.lower        = reading.l;
+    next.changingLine = reading.change;
+    delete next.u; delete next.l; delete next.change;
+  }
+  if (needsHourRename) {
+    next.inputs = { ...reading.inputs, hourBranch: reading.inputs.chHour };
+    delete next.inputs.chHour;
+  }
+  return { ...entry, data: next, dirty: true };
+}
+
 function _readAll() {
   if (!isStorageAvailable()) return [];
   try {
     const raw = window.localStorage.getItem(KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed : [];
+    if (!Array.isArray(parsed)) return [];
+    const migrated = parsed.map(_migrateEntry);
+    // If anything changed, persist the upgraded entries so subsequent reads
+    // skip the migration work.
+    const changed = migrated.some((entry, i) => entry !== parsed[i]);
+    if (changed) {
+      try { window.localStorage.setItem(KEY, JSON.stringify(migrated)); } catch {}
+    }
+    return migrated;
   } catch {
     return [];
   }

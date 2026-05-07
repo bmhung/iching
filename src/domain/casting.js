@@ -1,11 +1,21 @@
 import { solarToLunar, yearBranchOf } from "./lunar.js";
 
-export function castNumber(n1, n2) {
-  const u = (n1 % 8) === 0 ? 8 : n1 % 8;
-  const l = (n2 % 8) === 0 ? 8 : n2 % 8;
-  const sum = n1 + n2;
-  const change = (sum % 6) === 0 ? 6 : sum % 6;
-  return { u, l, change, method: "number", inputs: { n1, n2 } };
+// Each cast returns: { upper, lower, changingLine, method, inputs }
+//   upper, lower   = trigram numbers 1..8 (Pre-Heaven Xiantian)
+//   changingLine   = 1..6, counted from the bottom
+//   method         = "time" | "number" | "sound" | "spont"
+//   inputs         = method-specific input record (kept for display + replay)
+
+export function castNumber(firstNumber, secondNumber) {
+  const upper = (firstNumber % 8) === 0 ? 8 : firstNumber % 8;
+  const lower = (secondNumber % 8) === 0 ? 8 : secondNumber % 8;
+  const sum = firstNumber + secondNumber;
+  const changingLine = (sum % 6) === 0 ? 6 : sum % 6;
+  return {
+    upper, lower, changingLine,
+    method: "number",
+    inputs: { n1: firstNumber, n2: secondNumber },
+  };
 }
 
 export function castTime(year, month, day, hour, isLunar) {
@@ -26,18 +36,20 @@ export function castTime(year, month, day, hour, isLunar) {
     catch (e) { lunar = { year, month, day, leap: 0 }; }
   }
   const yearBranch = yearBranchOf(lunar.year);
-  const hourMap = [1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,1];
-  const ch = hourMap[hour] ?? 1;
+  // hour 0..23 → earthly branch index 1..12
+  const hourToBranch = [1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,1];
+  const hourBranch = hourToBranch[hour] ?? 1;
   const sum1 = yearBranch + lunar.month + lunar.day;
-  const sum2 = sum1 + ch;
-  const u = (sum1 % 8 === 0) ? 8 : sum1 % 8;
-  const l = (sum2 % 8 === 0) ? 8 : sum2 % 8;
-  const change = (sum2 % 6 === 0) ? 6 : sum2 % 6;
+  const sum2 = sum1 + hourBranch;
+  const upper = (sum1 % 8 === 0) ? 8 : sum1 % 8;
+  const lower = (sum2 % 8 === 0) ? 8 : sum2 % 8;
+  const changingLine = (sum2 % 6 === 0) ? 6 : sum2 % 6;
   return {
-    u, l, change, method: "time",
+    upper, lower, changingLine,
+    method: "time",
     inputs: {
       isLunar: !!isLunar, solar, lunar,
-      hour, chHour: ch, yearBranch,
+      hour, hourBranch, yearBranch,
       year: lunar.year, month: lunar.month, day: lunar.day,
     }
   };
@@ -45,22 +57,27 @@ export function castTime(year, month, day, hour, isLunar) {
 
 export function castSound(text) {
   const cleaned = [...text.replace(/\s+/g, "")];
-  const len = cleaned.length;
-  if (len < 2) return null;
-  const half1 = Math.ceil(len / 2);
-  const half2 = len - half1;
-  const u = (half1 % 8 === 0) ? 8 : half1 % 8;
-  const l = (half2 % 8 === 0) ? 8 : half2 % 8;
-  const sum = half1 + half2;
-  const change = (sum % 6 === 0) ? 6 : sum % 6;
-  return { u, l, change, method: "sound", inputs: { text, len, half1, half2 } };
+  const length = cleaned.length;
+  if (length < 2) return null;
+  const firstHalf = Math.ceil(length / 2);
+  const secondHalf = length - firstHalf;
+  const upper = (firstHalf % 8 === 0) ? 8 : firstHalf % 8;
+  const lower = (secondHalf % 8 === 0) ? 8 : secondHalf % 8;
+  const sum = firstHalf + secondHalf;
+  const changingLine = (sum % 6 === 0) ? 6 : sum % 6;
+  return {
+    upper, lower, changingLine,
+    method: "sound",
+    inputs: { text, len: length, half1: firstHalf, half2: secondHalf },
+  };
 }
 
 export function castSpont() {
   return {
-    u: Math.floor(Math.random() * 8) + 1,
-    l: Math.floor(Math.random() * 8) + 1,
-    change: Math.floor(Math.random() * 6) + 1,
-    method: "spont", inputs: {},
+    upper: Math.floor(Math.random() * 8) + 1,
+    lower: Math.floor(Math.random() * 8) + 1,
+    changingLine: Math.floor(Math.random() * 6) + 1,
+    method: "spont",
+    inputs: {},
   };
 }

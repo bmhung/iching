@@ -11,8 +11,8 @@ export const TRIGRAMS = [null,
   { n:8, sym:"☷", zh:"坤", py:"Kūn",  vi:"Khôn", en:"Earth",    el:"Earth", attrZh:"順", attrVi:"Thuận", attrEn:"Receptive",  famZh:"母",   famVi:"Mẹ",         famEn:"Mother",            dirZh:"西南", dirEn:"SW", bin:"000" },
 ];
 
-// HL[upper][lower] = King Wen hexagram number
-export const HL = {
+// HEX_BY_TRIGRAMS[upper][lower] = King Wen hexagram number
+export const HEX_BY_TRIGRAMS = {
   1: {1:1,  2:10, 3:13, 4:25, 5:44, 6:6,  7:33, 8:12}, // Càn ☰ above
   2: {1:43, 2:58, 3:49, 4:17, 5:28, 6:47, 7:31, 8:45}, // Đoài ☱
   3: {1:14, 2:38, 3:30, 4:21, 5:50, 6:64, 7:56, 8:35}, // Ly ☲
@@ -24,8 +24,8 @@ export const HL = {
 };
 
 // HEXAGRAMS — 64 in King Wen order
-// Compact: [u, l, zh, py, vi, en, jZh, jVi, jEn, iVi, iEn]
-const H = [null,
+// Compact row: [u, l, zh, py, vi, en, jZh, jVi, jEn, iVi, iEn]
+const HEX_ROWS = [null,
   [1,1,"乾","Qián","Thuần Càn","The Creative","元亨利貞。","Lớn lành, hanh thông, lợi và chính.","Sublime success; furthering through perseverance.","Trời chuyển động mạnh; quân tử tự cường không nghỉ.","Heaven moves with strength; the noble one cultivates ceaseless self-discipline."],
   [8,8,"坤","Kūn","Thuần Khôn","The Receptive","元亨,利牝馬之貞。","Lớn lành; bền bỉ như ngựa cái mới lợi.","Sublime success through the perseverance of a mare.","Thế đất là Khôn; quân tử dùng đức dày chở vạn vật.","Earth is yielding; the noble one bears all things with deep virtue."],
   [6,4,"屯","Zhūn","Thủy Lôi Truân","Difficulty at the Beginning","元亨利貞,勿用有攸往。","Khó khăn ban đầu; chớ vội tiến.","Sprouting through hardship; do not rush forward.","Mây sấm là Truân; quân tử lo việc tổ chức.","Clouds and thunder; the noble one weaves the threads."],
@@ -94,25 +94,35 @@ const H = [null,
 
 export const HEX = [null];
 for (let i = 1; i <= 64; i++) {
-  const r = H[i];
+  const row = HEX_ROWS[i];
   HEX[i] = {
-    n: i, u: r[0], l: r[1],
-    zh: r[2], py: r[3], vi: r[4], en: r[5],
-    jZh: r[6], jVi: r[7], jEn: r[8],
-    iVi: r[9], iEn: r[10],
+    n: i,
+    upper: row[0], lower: row[1],
+    zh: row[2], py: row[3], vi: row[4], en: row[5],
+    jZh: row[6], jVi: row[7], jEn: row[8],
+    iVi: row[9], iEn: row[10],
   };
 }
 
-export const TBIN = { "111":1, "110":2, "101":3, "100":4, "011":5, "010":6, "001":7, "000":8 };
+// Map from a 3-bit binary string (bottom-mid-top) to the trigram number 1–8.
+export const TRIGRAM_BY_BINARY = {
+  "111":1, "110":2, "101":3, "100":4, "011":5, "010":6, "001":7, "000":8,
+};
 
-export function getHex(u, l) { return HEX[HL[u][l]]; }
-export function hexBinary(u, l) { return TRIGRAMS[l].bin + TRIGRAMS[u].bin; }
+export function getHex(upper, lower) {
+  return HEX[HEX_BY_TRIGRAMS[upper][lower]];
+}
+
+// Returns the 6-bit binary string (line 1 = bottom, line 6 = top).
+export function hexBinary(upper, lower) {
+  return TRIGRAMS[lower].bin + TRIGRAMS[upper].bin;
+}
 
 // Language-aware name accessors
-export function trigName(t, lang) { return lang === "zh" ? t.zh : lang === "vi" ? t.vi : t.en; }
-export function trigAttr(t, lang) { return lang === "zh" ? t.attrZh : lang === "vi" ? t.attrVi : t.attrEn; }
-export function trigFam(t, lang)  { return lang === "zh" ? t.famZh  : lang === "vi" ? t.famVi  : t.famEn; }
-export function trigDir(t, lang)  { return lang === "zh" ? t.dirZh  : t.dirEn; }
-export function hexName(h, lang)  { return lang === "zh" ? h.zh : lang === "vi" ? h.vi : h.en; }
-export function hexJudg(h, lang)  { return lang === "zh" ? h.jZh : lang === "vi" ? h.jVi : h.jEn; }
-export function hexImg(h, lang)   { return lang === "vi" ? h.iVi : h.iEn; }
+export function trigName(trigram, lang) { return lang === "zh" ? trigram.zh : lang === "vi" ? trigram.vi : trigram.en; }
+export function trigAttr(trigram, lang) { return lang === "zh" ? trigram.attrZh : lang === "vi" ? trigram.attrVi : trigram.attrEn; }
+export function trigFam(trigram, lang)  { return lang === "zh" ? trigram.famZh  : lang === "vi" ? trigram.famVi  : trigram.famEn; }
+export function trigDir(trigram, lang)  { return lang === "zh" ? trigram.dirZh  : trigram.dirEn; }
+export function hexName(hex, lang)      { return lang === "zh" ? hex.zh : lang === "vi" ? hex.vi : hex.en; }
+export function hexJudg(hex, lang)      { return lang === "zh" ? hex.jZh : lang === "vi" ? hex.jVi : hex.jEn; }
+export function hexImg(hex, lang)       { return lang === "vi" ? hex.iVi : hex.iEn; }

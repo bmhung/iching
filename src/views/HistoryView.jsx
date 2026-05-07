@@ -6,7 +6,7 @@ import { isStorageAvailable, listReadings, deleteReading } from "../storage/loca
 import { notifyLocalWrite } from "../sync/engine.js";
 
 export default function HistoryView({ t, lang }) {
-  const [readings, setReadings] = useState(null);
+  const [entries, setEntries] = useState(null);
   const [selected, setSelected] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
@@ -17,15 +17,15 @@ export default function HistoryView({ t, lang }) {
   })[lang];
 
   useEffect(() => {
-    listReadings().then(setReadings);
+    listReadings().then(setEntries);
   }, []);
 
-  async function handleDelete(id, e) {
-    e.stopPropagation();
+  async function handleDelete(id, event) {
+    event.stopPropagation();
     if (deleteConfirm === id) {
       const ok = await deleteReading(id);
       if (ok) {
-        setReadings(rs => rs.filter(r => r.id !== id));
+        setEntries(rs => rs.filter(entry => entry.id !== id));
         setDeleteConfirm(null);
         notifyLocalWrite();
       }
@@ -37,9 +37,9 @@ export default function HistoryView({ t, lang }) {
 
   async function handleClearAll() {
     if (deleteConfirm === 'all') {
-      const ids = readings.map(r => r.id);
+      const ids = entries.map(entry => entry.id);
       for (const id of ids) await deleteReading(id);
-      setReadings([]);
+      setEntries([]);
       setDeleteConfirm(null);
       notifyLocalWrite();
     } else {
@@ -50,9 +50,9 @@ export default function HistoryView({ t, lang }) {
 
   function formatDate(iso) {
     try {
-      const d = new Date(iso);
+      const date = new Date(iso);
       const locale = lang === 'zh' ? 'zh-CN' : lang === 'vi' ? 'vi-VN' : 'en-US';
-      return d.toLocaleString(locale, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+      return date.toLocaleString(locale, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
     } catch { return iso; }
   }
 
@@ -69,7 +69,7 @@ export default function HistoryView({ t, lang }) {
     );
   }
 
-  if (readings === null) {
+  if (entries === null) {
     return <div className="max-w-3xl mx-auto px-6 py-8 text-stone-500 text-sm">{labels.loading}</div>;
   }
 
@@ -77,7 +77,7 @@ export default function HistoryView({ t, lang }) {
     <div className="max-w-3xl mx-auto px-6 py-8">
       <div className="flex items-baseline justify-between mb-6 gap-4">
         <h2 className="text-2xl font-serif text-stone-900">{labels.title}</h2>
-        {readings.length > 0 && (
+        {entries.length > 0 && (
           <button onClick={handleClearAll}
             className={`text-xs px-3 py-1 border rounded transition-colors flex-shrink-0 ${deleteConfirm === 'all' ? 'border-rose-700 text-rose-700 bg-rose-50' : 'border-stone-400 text-stone-600 hover:border-rose-900 hover:text-rose-900'}`}>
             {deleteConfirm === 'all' ? labels.confirmAll : labels.clearAll}
@@ -90,43 +90,43 @@ export default function HistoryView({ t, lang }) {
           <div className="font-medium text-amber-900 mb-1">⚠ {labels.noStorageT}</div>
           <div className="text-amber-800 leading-relaxed">{labels.noStorageB}</div>
         </div>
-      ) : readings.length === 0 ? (
+      ) : entries.length === 0 ? (
         <div className="text-stone-500 text-sm py-12 text-center border border-stone-200 border-dashed rounded">
           {labels.empty}
         </div>
       ) : (
         <div className="space-y-2">
-          {readings.map(r => {
-            const data = r.data;
-            const ben = getHex(data.u, data.l);
-            if (!ben) return null;
+          {entries.map(entry => {
+            const reading = entry.data;
+            const originalHex = getHex(reading.upper, reading.lower);
+            if (!originalHex) return null;
             return (
-              <div key={r.id} onClick={() => setSelected(data)}
+              <div key={entry.id} onClick={() => setSelected(reading)}
                 className="cursor-pointer w-full bg-white border border-stone-300 hover:border-rose-900 hover:bg-rose-50/30 transition-colors rounded p-4">
                 <div className="flex items-start gap-4">
-                  <div className="flex-shrink-0"><HexLines u={data.u} l={data.l} change={data.change} size="sm" /></div>
+                  <div className="flex-shrink-0"><HexLines upper={reading.upper} lower={reading.lower} changingLine={reading.changingLine} size="sm" /></div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-baseline gap-2 mb-1 flex-wrap">
-                      <span className="text-lg font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{ben.zh}</span>
-                      <span className="text-sm text-stone-700 truncate">{hexName(ben, lang)}</span>
-                      <span className="text-xs text-stone-400">#{ben.n}</span>
+                      <span className="text-lg font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{originalHex.zh}</span>
+                      <span className="text-sm text-stone-700 truncate">{hexName(originalHex, lang)}</span>
+                      <span className="text-xs text-stone-400">#{originalHex.n}</span>
                     </div>
-                    {data.question ? (
-                      <div className="text-xs text-stone-700 italic truncate mb-1">"{data.question}"</div>
+                    {reading.question ? (
+                      <div className="text-xs text-stone-700 italic truncate mb-1">"{reading.question}"</div>
                     ) : (
                       <div className="text-xs text-stone-400 italic mb-1">{labels.anonQ}</div>
                     )}
                     <div className="text-[11px] text-stone-500 flex items-center gap-2 flex-wrap">
-                      <span>{formatDate(r.createdAt)}</span>
+                      <span>{formatDate(entry.createdAt)}</span>
                       <span className="text-stone-300">·</span>
-                      <span>{t.result.methodNames[data.method]}</span>
+                      <span>{t.result.methodNames[reading.method]}</span>
                       <span className="text-stone-300">·</span>
-                      <span>{t.result.line} {data.change}</span>
+                      <span>{t.result.line} {reading.changingLine}</span>
                     </div>
                   </div>
-                  <button onClick={e => handleDelete(r.id, e)}
-                    className={`text-xs px-2 py-1 rounded transition-colors flex-shrink-0 ${deleteConfirm === r.id ? 'bg-rose-700 text-white' : 'text-stone-400 hover:text-rose-700'}`}>
-                    {deleteConfirm === r.id ? labels.confirmDel : '✕'}
+                  <button onClick={event => handleDelete(entry.id, event)}
+                    className={`text-xs px-2 py-1 rounded transition-colors flex-shrink-0 ${deleteConfirm === entry.id ? 'bg-rose-700 text-white' : 'text-stone-400 hover:text-rose-700'}`}>
+                    {deleteConfirm === entry.id ? labels.confirmDel : '✕'}
                   </button>
                 </div>
               </div>

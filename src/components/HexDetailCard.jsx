@@ -9,7 +9,7 @@ export default function HexDetailCard({ hex, t, lang, label, labelZh }) {
     <div className="bg-white border border-stone-300 rounded p-5 mb-4">
       <div className="flex items-start gap-5">
         <div className="flex-shrink-0">
-          <HexLines u={hex.u} l={hex.l} size="lg" />
+          <HexLines upper={hex.upper} lower={hex.lower} size="lg" />
         </div>
         <div className="flex-1">
           <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">

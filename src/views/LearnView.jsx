@@ -11,21 +11,21 @@ export default function LearnView({ t, lang }) {
         <p className="text-sm text-stone-700 mb-4">{t.learn.bagua}</p>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {[1,2,3,4,5,6,7,8].map(i => {
-            const tg = TRIGRAMS[i];
+            const trigram = TRIGRAMS[i];
             return (
               <div key={i} className="bg-white border border-stone-300 rounded p-3">
                 <div className="flex items-center gap-2 mb-2">
-                  <TrigramLines n={i} size="sm" />
+                  <TrigramLines trigramNumber={i} size="sm" />
                   <div>
-                    <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{tg.zh} <span className="text-stone-500 text-sm">{i}</span></div>
-                    <div className="text-xs text-stone-600">{trigName(tg, lang)}</div>
+                    <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{trigram.zh} <span className="text-stone-500 text-sm">{i}</span></div>
+                    <div className="text-xs text-stone-600">{trigName(trigram, lang)}</div>
                   </div>
                 </div>
                 <div className="text-[11px] text-stone-600 space-y-0.5 border-t border-stone-200 pt-2">
-                  <div>{t.result.element}: <span className="text-rose-900">{t.elements[tg.el]}</span></div>
-                  <div>{t.result.attribute}: {trigAttr(tg, lang)}</div>
-                  <div>{t.result.family}: {trigFam(tg, lang)}</div>
-                  <div>{t.result.direction}: {trigDir(tg, lang)}</div>
+                  <div>{t.result.element}: <span className="text-rose-900">{t.elements[trigram.el]}</span></div>
+                  <div>{t.result.attribute}: {trigAttr(trigram, lang)}</div>
+                  <div>{t.result.family}: {trigFam(trigram, lang)}</div>
+                  <div>{t.result.direction}: {trigDir(trigram, lang)}</div>
                 </div>
               </div>
             );
@@ -66,9 +66,9 @@ export default function LearnView({ t, lang }) {
       <section className="mb-10">
         <h3 className="text-lg font-serif text-stone-900 mb-3">{t.learn.hexT}</h3>
         <div className="space-y-2 text-sm text-stone-700">
-          <div className="border-l-2 border-stone-700 pl-3">{t.learn.benDef}</div>
-          <div className="border-l-2 border-amber-700 pl-3">{t.learn.huDef}</div>
-          <div className="border-l-2 border-rose-700 pl-3">{t.learn.bienDef}</div>
+          <div className="border-l-2 border-stone-700 pl-3">{t.learn.originalDef}</div>
+          <div className="border-l-2 border-amber-700 pl-3">{t.learn.nuclearDef}</div>
+          <div className="border-l-2 border-rose-700 pl-3">{t.learn.transformedDef}</div>
         </div>
       </section>
 

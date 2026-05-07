@@ -27,28 +27,28 @@ function TiYongSection({ analysis, t, lang, label, labelZh }) {
         <div className="bg-stone-50 border border-stone-300 rounded p-3">
           <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">{t.result.ti} · 體 · {t.result.tiSub}</div>
           <div className="flex items-center gap-2 mb-2">
-            <TrigramLines n={analysis.ti} size="sm" />
+            <TrigramLines trigramNumber={analysis.ti} size="sm" />
             <div>
-              <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{analysis.tiT.zh} {analysis.tiT.sym}</div>
-              <div className="text-xs text-stone-600">{trigName(analysis.tiT, lang)}</div>
+              <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{analysis.tiTrigram.zh} {analysis.tiTrigram.sym}</div>
+              <div className="text-xs text-stone-600">{trigName(analysis.tiTrigram, lang)}</div>
             </div>
           </div>
           <div className="text-xs text-stone-600">
-            <span className="text-rose-900">{t.elements[analysis.tiT.el]}</span>
+            <span className="text-rose-900">{t.elements[analysis.tiTrigram.el]}</span>
           </div>
         </div>
 
         <div className="bg-stone-50 border border-stone-300 rounded p-3">
           <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-1">{t.result.yong} · 用 · {t.result.yongSub}</div>
           <div className="flex items-center gap-2 mb-2">
-            <TrigramLines n={analysis.yong} size="sm" />
+            <TrigramLines trigramNumber={analysis.yong} size="sm" />
             <div>
-              <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{analysis.yongT.zh} {analysis.yongT.sym}</div>
-              <div className="text-xs text-stone-600">{trigName(analysis.yongT, lang)}</div>
+              <div className="font-serif text-stone-900" style={{fontFamily:'"Songti SC","STSong","SimSun",serif'}}>{analysis.yongTrigram.zh} {analysis.yongTrigram.sym}</div>
+              <div className="text-xs text-stone-600">{trigName(analysis.yongTrigram, lang)}</div>
             </div>
           </div>
           <div className="text-xs text-stone-600">
-            <span className="text-rose-900">{t.elements[analysis.yongT.el]}</span>
+            <span className="text-rose-900">{t.elements[analysis.yongTrigram.el]}</span>
           </div>
         </div>
       </div>
@@ -79,9 +79,9 @@ export default function TiYongPanel({ sections, yongIsLower, t, lang }) {
       </div>
 
       <div className="space-y-5">
-        {sections.map((s, i) => (
+        {sections.map((section, i) => (
           <div key={i} className={i > 0 ? "pt-5 border-t border-stone-200" : ""}>
-            <TiYongSection analysis={s.analysis} t={t} lang={lang} label={s.label} labelZh={s.labelZh} />
+            <TiYongSection analysis={section.analysis} t={t} lang={lang} label={section.label} labelZh={section.labelZh} />
           </div>
         ))}
       </div>
