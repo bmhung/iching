@@ -3,6 +3,7 @@ import HexCard from "../components/HexCard.jsx";
 import TrigramSummary from "../components/TrigramSummary.jsx";
 import CastCalculation from "../components/CastCalculation.jsx";
 import TiYongPanel from "../components/TiYongPanel.jsx";
+import HexCommentary from "../components/HexCommentary.jsx";
 import { getHex, hexName, hexJudg, hexImg } from "../domain/trigrams.js";
 import { getNuclear, getTransformed, tiYongAnalysis } from "../domain/analysis.js";
 
@@ -106,6 +107,11 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
             </div>
           </div>
         </div>
+        {lang === "vi" && (
+          <div className="border-t border-stone-200 pt-4 mt-4">
+            <HexCommentary hex={ben} lang={lang} />
+          </div>
+        )}
       </div>
 
       <div className="bg-rose-50/50 border border-rose-200 rounded p-5 mb-4">

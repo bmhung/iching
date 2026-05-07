@@ -1,5 +1,6 @@
 import { useState } from "react";
 import HexLines from "../components/HexLines.jsx";
+import HexCommentary from "../components/HexCommentary.jsx";
 import { HEX, TRIGRAMS, getHex, hexName, hexJudg, hexImg, trigName } from "../domain/trigrams.js";
 import { getOpposite, getInverse } from "../domain/analysis.js";
 
@@ -42,6 +43,11 @@ export default function RefView({ t, lang }) {
               <div className="text-[10px] uppercase tracking-widest text-stone-500 mb-0.5">{t.result.image} · 象</div>
               <div className="text-sm text-stone-700 italic">{hexImg(h, lang)}</div>
             </div>
+            {lang === "vi" && (
+              <div className="pt-3 border-t border-stone-200">
+                <HexCommentary hex={h} lang={lang} />
+              </div>
+            )}
           </div>
         </div>
 
