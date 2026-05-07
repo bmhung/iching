@@ -4,6 +4,7 @@ import TrigramSummary from "../components/TrigramSummary.jsx";
 import CastCalculation from "../components/CastCalculation.jsx";
 import TiYongPanel from "../components/TiYongPanel.jsx";
 import HexCommentary from "../components/HexCommentary.jsx";
+import HexDetailCard from "../components/HexDetailCard.jsx";
 import { getHex, hexName, hexJudg, hexImg } from "../domain/trigrams.js";
 import { getNuclear, getTransformed, tiYongAnalysis } from "../domain/analysis.js";
 
@@ -113,6 +114,9 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
           </div>
         )}
       </div>
+
+      <HexDetailCard hex={huHex}   t={t} lang={lang} label={t.result.hu}   labelZh={t.result.huZh} />
+      <HexDetailCard hex={bienHex} t={t} lang={lang} label={t.result.bien} labelZh={t.result.bienZh} />
 
       <div className="bg-rose-50/50 border border-rose-200 rounded p-5 mb-4">
         <div className="flex items-center gap-2 mb-2">
