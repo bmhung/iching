@@ -50,6 +50,7 @@ export const STR = {
       element: "Hành", family: "Gia", direction: "Phương", attribute: "Tính", relation: "Quan hệ ngũ hành",
       saved: "✓ Đã lưu", saving: "Đang lưu…", saveError: "⚠ Lưu thất bại",
       noStorage: "⚠ Bộ nhớ không khả dụng — quẻ này không được lưu",
+      copyForAI: "Sao chép cho AI", copied: "✓ Đã sao chép", copyError: "Không sao chép được",
     },
     rel: {
       bihoa: "Tỷ hòa — hai bên cùng hành. Hài hòa, ổn định, không biến động lớn.",
@@ -150,6 +151,7 @@ export const STR = {
       element: "Element", family: "Family", direction: "Direction", attribute: "Attribute", relation: "Five-element relation",
       saved: "✓ Saved", saving: "Saving…", saveError: "⚠ Save failed",
       noStorage: "⚠ Storage unavailable — this reading was not saved",
+      copyForAI: "Copy for AI", copied: "✓ Copied", copyError: "Couldn't copy",
     },
     rel: {
       bihoa: "Same element — host and guest balanced. Stable; no major shift.",
@@ -250,6 +252,7 @@ export const STR = {
       element: "行", family: "屬", direction: "位", attribute: "性", relation: "五行關係",
       saved: "✓ 已存", saving: "存中…", saveError: "⚠ 存儲失敗",
       noStorage: "⚠ 無存儲 — 此卦未保存",
+      copyForAI: "複製給 AI", copied: "✓ 已複製", copyError: "複製失敗",
     },
     rel: {
       bihoa: "比和 — 同氣相應,平穩無變。",

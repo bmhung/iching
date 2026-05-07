@@ -5,6 +5,7 @@ import CastCalculation from "../components/CastCalculation.jsx";
 import TiYongPanel from "../components/TiYongPanel.jsx";
 import HexCommentary from "../components/HexCommentary.jsx";
 import HexDetailCard from "../components/HexDetailCard.jsx";
+import CopyForAIButton from "../components/CopyForAIButton.jsx";
 import { getHex, hexName, hexJudg, hexImg } from "../domain/trigrams.js";
 import { getNuclear, getTransformed, tiYongAnalysis } from "../domain/analysis.js";
 
@@ -41,9 +42,12 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
             <span className="text-stone-700">{inputsLine}</span>
           </div>
         </div>
-        <button onClick={onAgain} className="text-xs px-3 py-1.5 border border-stone-400 hover:border-rose-900 hover:text-rose-900 rounded transition-colors">
-          {t.cast.again}
-        </button>
+        <div className="flex items-center gap-2">
+          <CopyForAIButton reading={reading} lang={lang} t={t} />
+          <button onClick={onAgain} className="text-xs px-3 py-1.5 border border-stone-400 hover:border-rose-900 hover:text-rose-900 rounded transition-colors">
+            {t.cast.again}
+          </button>
+        </div>
       </div>
 
       {saveStatus && (
