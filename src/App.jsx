@@ -1,5 +1,6 @@
 import { useState } from "react";
 import PlumBlossom from "./components/PlumBlossom.jsx";
+import AuthBar from "./components/AuthBar.jsx";
 import HomeView from "./views/HomeView.jsx";
 import CastView from "./views/CastView.jsx";
 import RefView from "./views/RefView.jsx";
@@ -35,13 +36,16 @@ export default function App() {
               <div className="text-[10px] uppercase tracking-widest text-stone-500">{t.subtitle}</div>
             </div>
           </button>
-          <div className="flex gap-1 text-xs">
-            {langOptions.map(o => (
-              <button key={o.code} onClick={() => setLang(o.code)}
-                className={`px-2.5 py-1 rounded transition-colors ${lang === o.code ? "bg-stone-900 text-stone-50" : "text-stone-600 hover:text-stone-900"}`}>
-                {o.label}
-              </button>
-            ))}
+          <div className="flex items-center gap-3">
+            <AuthBar t={t} />
+            <div className="flex gap-1 text-xs">
+              {langOptions.map(o => (
+                <button key={o.code} onClick={() => setLang(o.code)}
+                  className={`px-2.5 py-1 rounded transition-colors ${lang === o.code ? "bg-stone-900 text-stone-50" : "text-stone-600 hover:text-stone-900"}`}>
+                  {o.label}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
 
