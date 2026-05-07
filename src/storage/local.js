@@ -34,15 +34,26 @@ export function isStorageAvailable() {
   }
 }
 
-// Migrate an entry from the legacy reading shape ({u, l, change, inputs.chHour})
-// to the current one ({upper, lower, changingLine, inputs.hourBranch}).
-// No-op when the entry is already current.
+// Migrate an entry from a legacy reading shape to the current one. No-op when
+// already current. Field renames covered:
+//   {u, l, change}                            → {upper, lower, changingLine}
+//   inputs.chHour                             → inputs.hourBranch
+//   inputs.{n1, n2}                           → inputs.{firstNumber, secondNumber}
+//   inputs.{half1, half2, len}                → inputs.{firstHalf, secondHalf, length}
 function _migrateEntry(entry) {
   if (!entry || !entry.data) return entry;
   const reading = entry.data;
-  const needsHexRename   = reading.u !== undefined && reading.upper === undefined;
-  const needsHourRename  = reading.inputs && reading.inputs.chHour !== undefined && reading.inputs.hourBranch === undefined;
-  if (!needsHexRename && !needsHourRename) return entry;
+  const oldInputs = reading.inputs || {};
+
+  const needsHexRename    = reading.u !== undefined && reading.upper === undefined;
+  const needsHourRename   = oldInputs.chHour !== undefined && oldInputs.hourBranch === undefined;
+  const needsNumberRename = oldInputs.n1 !== undefined && oldInputs.firstNumber === undefined;
+  const needsHalfRename   = oldInputs.half1 !== undefined && oldInputs.firstHalf === undefined;
+  const needsLengthRename = oldInputs.len !== undefined && oldInputs.length === undefined;
+
+  if (!needsHexRename && !needsHourRename && !needsNumberRename && !needsHalfRename && !needsLengthRename) {
+    return entry;
+  }
 
   const next = { ...reading };
   if (needsHexRename) {
@@ -51,9 +62,13 @@ function _migrateEntry(entry) {
     next.changingLine = reading.change;
     delete next.u; delete next.l; delete next.change;
   }
-  if (needsHourRename) {
-    next.inputs = { ...reading.inputs, hourBranch: reading.inputs.chHour };
-    delete next.inputs.chHour;
+  if (needsHourRename || needsNumberRename || needsHalfRename || needsLengthRename) {
+    const nextInputs = { ...oldInputs };
+    if (needsHourRename)   { nextInputs.hourBranch    = oldInputs.chHour; delete nextInputs.chHour; }
+    if (needsNumberRename) { nextInputs.firstNumber   = oldInputs.n1;     nextInputs.secondNumber = oldInputs.n2; delete nextInputs.n1; delete nextInputs.n2; }
+    if (needsHalfRename)   { nextInputs.firstHalf     = oldInputs.half1;  nextInputs.secondHalf   = oldInputs.half2; delete nextInputs.half1; delete nextInputs.half2; }
+    if (needsLengthRename) { nextInputs.length        = oldInputs.len;    delete nextInputs.len; }
+    next.inputs = nextInputs;
   }
   return { ...entry, data: next, dirty: true };
 }

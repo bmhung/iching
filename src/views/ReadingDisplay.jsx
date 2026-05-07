@@ -24,9 +24,9 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
   const inputsLine = reading.method === "time"
     ? `${t.branches[reading.inputs.yearBranch - 1]}年 · ${reading.inputs.month}月 · ${reading.inputs.day}日 · ${t.branches[reading.inputs.hourBranch - 1]}時`
     : reading.method === "number"
-    ? `${reading.inputs.n1} , ${reading.inputs.n2}`
+    ? `${reading.inputs.firstNumber} , ${reading.inputs.secondNumber}`
     : reading.method === "sound"
-    ? `"${reading.inputs.text}" (${reading.inputs.len})`
+    ? `"${reading.inputs.text}" (${reading.inputs.length})`
     : "—";
 
   return (

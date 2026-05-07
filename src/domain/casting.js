@@ -14,7 +14,7 @@ export function castNumber(firstNumber, secondNumber) {
   return {
     upper, lower, changingLine,
     method: "number",
-    inputs: { n1: firstNumber, n2: secondNumber },
+    inputs: { firstNumber, secondNumber },
   };
 }
 
@@ -68,7 +68,7 @@ export function castSound(text) {
   return {
     upper, lower, changingLine,
     method: "sound",
-    inputs: { text, len: length, half1: firstHalf, half2: secondHalf },
+    inputs: { text, length, firstHalf, secondHalf },
   };
 }
 

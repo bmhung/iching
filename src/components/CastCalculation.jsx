@@ -4,9 +4,9 @@ export default function CastCalculation({ reading, lang, t }) {
   const { method, inputs, upper, lower, changingLine } = reading;
 
   const L = ({
-    vi: { title: "Cách dựng quẻ (起卦演算)", inputs: "Đầu vào", upper: "Thượng quái", lower: "Hạ quái", changing: "Động hào", rem: "dư", arrow: "→", year: "Năm-chi", month: "Tháng", day: "Ngày", hour: "Giờ-chi", n1: "Số 1", n2: "Số 2", chars: "Số chữ", half1: "Nửa đầu", half2: "Nửa sau", text: "Câu", solarLabel: "Dương lịch", lunarLabel: "Âm lịch", lunarConverted: "→ Đổi sang Âm lịch", leap: "nhuận", noteTime: "Mai Hoa Dịch dùng Âm lịch. Nếu nhập Dương lịch, hệ thống tự đổi sang Âm rồi mới dựng quẻ.", note: "Quái: chia 8 lấy số dư (nếu dư 0 thì lấy 8). Động hào: chia 6 lấy số dư (nếu dư 0 thì lấy 6).", random: "Hệ thống chọn ngẫu nhiên — không có công thức." },
-    en: { title: "Derivation", inputs: "Inputs", upper: "Upper", lower: "Lower", changing: "Changing line", rem: "rem", arrow: "→", year: "Year branch", month: "Month", day: "Day", hour: "Hour branch", n1: "Number 1", n2: "Number 2", chars: "Total chars", half1: "First half", half2: "Second half", text: "Phrase", solarLabel: "Solar", lunarLabel: "Lunar", lunarConverted: "→ Converted to lunar", leap: "leap", noteTime: "Plum Blossom uses the lunar calendar. Solar input is auto-converted to lunar before computing.", note: "Trigrams: divide by 8, use remainder (rem 0 means 8). Changing line: divide by 6, use remainder (rem 0 means 6).", random: "Cast randomly by the system — no formula." },
-    zh: { title: "起卦演算", inputs: "輸入", upper: "上卦", lower: "下卦", changing: "動爻", rem: "餘", arrow: "→", year: "年支", month: "月", day: "日", hour: "時支", n1: "數一", n2: "數二", chars: "字數", half1: "前半", half2: "後半", text: "字句", solarLabel: "陽曆", lunarLabel: "農曆", lunarConverted: "→ 換為農曆", leap: "閏", noteTime: "梅花用農曆。輸入陽曆者先換為農曆,再起卦。", note: "卦:除8取餘(餘0則為8)。動爻:除6取餘(餘0則為6)。", random: "由系統隨機起卦,無公式。" },
+    vi: { title: "Cách dựng quẻ (起卦演算)", inputs: "Đầu vào", upper: "Thượng quái", lower: "Hạ quái", changing: "Động hào", rem: "dư", arrow: "→", year: "Năm-chi", month: "Tháng", day: "Ngày", hour: "Giờ-chi", firstNumber: "Số 1", secondNumber: "Số 2", chars: "Số chữ", firstHalf: "Nửa đầu", secondHalf: "Nửa sau", text: "Câu", solarLabel: "Dương lịch", lunarLabel: "Âm lịch", lunarConverted: "→ Đổi sang Âm lịch", leap: "nhuận", noteTime: "Mai Hoa Dịch dùng Âm lịch. Nếu nhập Dương lịch, hệ thống tự đổi sang Âm rồi mới dựng quẻ.", note: "Quái: chia 8 lấy số dư (nếu dư 0 thì lấy 8). Động hào: chia 6 lấy số dư (nếu dư 0 thì lấy 6).", random: "Hệ thống chọn ngẫu nhiên — không có công thức." },
+    en: { title: "Derivation", inputs: "Inputs", upper: "Upper", lower: "Lower", changing: "Changing line", rem: "rem", arrow: "→", year: "Year branch", month: "Month", day: "Day", hour: "Hour branch", firstNumber: "Number 1", secondNumber: "Number 2", chars: "Total chars", firstHalf: "First half", secondHalf: "Second half", text: "Phrase", solarLabel: "Solar", lunarLabel: "Lunar", lunarConverted: "→ Converted to lunar", leap: "leap", noteTime: "Plum Blossom uses the lunar calendar. Solar input is auto-converted to lunar before computing.", note: "Trigrams: divide by 8, use remainder (rem 0 means 8). Changing line: divide by 6, use remainder (rem 0 means 6).", random: "Cast randomly by the system — no formula." },
+    zh: { title: "起卦演算", inputs: "輸入", upper: "上卦", lower: "下卦", changing: "動爻", rem: "餘", arrow: "→", year: "年支", month: "月", day: "日", hour: "時支", firstNumber: "數一", secondNumber: "數二", chars: "字數", firstHalf: "前半", secondHalf: "後半", text: "字句", solarLabel: "陽曆", lunarLabel: "農曆", lunarConverted: "→ 換為農曆", leap: "閏", noteTime: "梅花用農曆。輸入陽曆者先換為農曆,再起卦。", note: "卦:除8取餘(餘0則為8)。動爻:除6取餘(餘0則為6)。", random: "由系統隨機起卦,無公式。" },
   })[lang];
 
   function divide(sum, divisor, useWhenZero) {
@@ -33,18 +33,18 @@ export default function CastCalculation({ reading, lang, t }) {
     lowerEq    = { expr: `${yearBranch} + ${lunarMonth} + ${lunarDay} + ${hourBranch}`,  sum: lowerSum, divisor: 8, ...divide(lowerSum, 8, 8) };
     changingEq = { expr: `${lowerSum}`,                                                   sum: lowerSum, divisor: 6, simple: true, ...divide(lowerSum, 6, 6) };
   } else if (method === "number") {
-    const firstNumber = inputs.n1, secondNumber = inputs.n2;
-    inputItems = [{ k: L.n1, v: firstNumber }, { k: L.n2, v: secondNumber }];
+    const { firstNumber, secondNumber } = inputs;
+    inputItems = [{ k: L.firstNumber, v: firstNumber }, { k: L.secondNumber, v: secondNumber }];
     upperEq    = { expr: `${firstNumber}`,                       sum: firstNumber,                 divisor: 8, simple: true, ...divide(firstNumber, 8, 8) };
     lowerEq    = { expr: `${secondNumber}`,                      sum: secondNumber,                divisor: 8, simple: true, ...divide(secondNumber, 8, 8) };
     changingEq = { expr: `${firstNumber} + ${secondNumber}`,     sum: firstNumber + secondNumber,  divisor: 6,               ...divide(firstNumber + secondNumber, 6, 6) };
   } else if (method === "sound") {
-    const firstHalf = inputs.half1, secondHalf = inputs.half2;
+    const { firstHalf, secondHalf } = inputs;
     inputItems = [
-      { k: L.text,  v: `"${(inputs.text || "").slice(0, 30)}"` },
-      { k: L.chars, v: inputs.len },
-      { k: L.half1, v: firstHalf },
-      { k: L.half2, v: secondHalf },
+      { k: L.text,       v: `"${(inputs.text || "").slice(0, 30)}"` },
+      { k: L.chars,      v: inputs.length },
+      { k: L.firstHalf,  v: firstHalf },
+      { k: L.secondHalf, v: secondHalf },
     ];
     upperEq    = { expr: `${firstHalf}`,                       sum: firstHalf,              divisor: 8, simple: true, ...divide(firstHalf, 8, 8) };
     lowerEq    = { expr: `${secondHalf}`,                      sum: secondHalf,             divisor: 8, simple: true, ...divide(secondHalf, 8, 8) };

@@ -7,8 +7,8 @@ import ReadingDisplay from "./ReadingDisplay.jsx";
 
 export default function CastView({ t, lang, reading, setReading }) {
   const [method, setMethod] = useState(null);
-  const [n1, setN1] = useState("");
-  const [n2, setN2] = useState("");
+  const [firstNumber, setFirstNumber]   = useState("");
+  const [secondNumber, setSecondNumber] = useState("");
   const [text, setText] = useState("");
   const [question, setQuestion] = useState("");
   const [error, setError] = useState("");
@@ -58,10 +58,10 @@ export default function CastView({ t, lang, reading, setReading }) {
       }
       castResult = castTime(parsedYear, parsedMonth, parsedDay, parsedHour, calendar === "lunar");
     } else if (method === "number") {
-      const firstNumber  = parseInt(n1);
-      const secondNumber = parseInt(n2);
-      if (!firstNumber || !secondNumber || firstNumber < 1 || secondNumber < 1) { setError(t.cast.enterNums); return; }
-      castResult = castNumber(firstNumber, secondNumber);
+      const parsedFirst  = parseInt(firstNumber);
+      const parsedSecond = parseInt(secondNumber);
+      if (!parsedFirst || !parsedSecond || parsedFirst < 1 || parsedSecond < 1) { setError(t.cast.enterNums); return; }
+      castResult = castNumber(parsedFirst, parsedSecond);
     } else if (method === "sound") {
       castResult = castSound(text);
       if (!castResult) { setError(t.cast.tooShort); return; }
@@ -78,7 +78,7 @@ export default function CastView({ t, lang, reading, setReading }) {
   }
 
   function reset() {
-    setReading(null); setMethod(null); setN1(""); setN2(""); setText(""); setError("");
+    setReading(null); setMethod(null); setFirstNumber(""); setSecondNumber(""); setText(""); setError("");
     setSaveStatus(null);
     resetNow();
   }
@@ -183,13 +183,13 @@ export default function CastView({ t, lang, reading, setReading }) {
           {method === "number" && (
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div>
-                <label className="block text-sm text-stone-600 mb-1.5">{t.cast.n1}</label>
-                <input type="number" value={n1} onChange={e => setN1(e.target.value)} min="1"
+                <label className="block text-sm text-stone-600 mb-1.5">{t.cast.firstNumber}</label>
+                <input type="number" value={firstNumber} onChange={e => setFirstNumber(e.target.value)} min="1"
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-300 focus:border-rose-900 outline-none rounded" />
               </div>
               <div>
-                <label className="block text-sm text-stone-600 mb-1.5">{t.cast.n2}</label>
-                <input type="number" value={n2} onChange={e => setN2(e.target.value)} min="1"
+                <label className="block text-sm text-stone-600 mb-1.5">{t.cast.secondNumber}</label>
+                <input type="number" value={secondNumber} onChange={e => setSecondNumber(e.target.value)} min="1"
                   className="w-full px-3 py-2 bg-stone-50 border border-stone-300 focus:border-rose-900 outline-none rounded" />
               </div>
             </div>
