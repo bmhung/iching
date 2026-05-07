@@ -1,9 +1,18 @@
 import { useState } from "react";
 import { isSupabaseConfigured } from "../sync/supabase.js";
-import { useSession, sendMagicLink, signOut } from "../sync/auth.js";
+import { sendMagicLink, signOut } from "../sync/auth.js";
+import { useSyncEngine } from "../sync/engine.js";
+
+function SyncBadge({ status, t }) {
+  if (status === "syncing") return <span className="text-[11px] text-stone-500">{t.auth.syncing}</span>;
+  if (status === "synced")  return <span className="text-[11px] text-emerald-700">{t.auth.synced}</span>;
+  if (status === "offline") return <span className="text-[11px] text-amber-700">{t.auth.offline}</span>;
+  if (status === "error")   return <span className="text-[11px] text-rose-700">{t.auth.syncError}</span>;
+  return null;
+}
 
 export default function AuthBar({ t }) {
-  const { session, ready } = useSession();
+  const { status: syncStatus, signedIn, session, ready } = useSyncEngine();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState("idle"); // idle | sending | sent | error
@@ -12,9 +21,10 @@ export default function AuthBar({ t }) {
   if (!isSupabaseConfigured) return null;
   if (!ready) return <div className="text-[11px] text-stone-400">…</div>;
 
-  if (session?.user) {
+  if (signedIn && session?.user) {
     return (
       <div className="flex items-center gap-2 text-[11px] text-stone-600">
+        <SyncBadge status={syncStatus} t={t} />
         <span className="hidden sm:inline truncate max-w-[160px]" title={session.user.email}>
           {session.user.email}
         </span>

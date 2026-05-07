@@ -3,6 +3,7 @@ import HexLines from "../components/HexLines.jsx";
 import ReadingDisplay from "./ReadingDisplay.jsx";
 import { getHex, hexName } from "../domain/trigrams.js";
 import { isStorageAvailable, listReadings, deleteReading } from "../storage/local.js";
+import { notifyLocalWrite } from "../sync/engine.js";
 
 export default function HistoryView({ t, lang }) {
   const [readings, setReadings] = useState(null);
@@ -26,6 +27,7 @@ export default function HistoryView({ t, lang }) {
       if (ok) {
         setReadings(rs => rs.filter(r => r.id !== id));
         setDeleteConfirm(null);
+        notifyLocalWrite();
       }
     } else {
       setDeleteConfirm(id);
@@ -39,6 +41,7 @@ export default function HistoryView({ t, lang }) {
       for (const id of ids) await deleteReading(id);
       setReadings([]);
       setDeleteConfirm(null);
+      notifyLocalWrite();
     } else {
       setDeleteConfirm('all');
       setTimeout(() => setDeleteConfirm(c => c === 'all' ? null : c), 3000);

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { castTime, castNumber, castSound, castSpont } from "../domain/casting.js";
 import { solarToLunar, yearBranchOf } from "../domain/lunar.js";
 import { saveReading } from "../storage/local.js";
+import { notifyLocalWrite } from "../sync/engine.js";
 import ReadingDisplay from "./ReadingDisplay.jsx";
 
 export default function CastView({ t, lang, reading, setReading }) {
@@ -67,6 +68,7 @@ export default function CastView({ t, lang, reading, setReading }) {
       setSaveStatus('saving');
       saveReading(r).then(res => {
         setSaveStatus(res.ok ? 'saved' : res.reason);
+        if (res.ok) notifyLocalWrite();
       });
     }
   }
