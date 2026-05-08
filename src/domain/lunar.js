@@ -100,3 +100,7 @@ export function solarToLunar(dd, mm, yy, tz = 7) {
 export function yearBranchOf(lunarYear) {
   return (((lunarYear - 4) % 12) + 12) % 12 + 1;
 }
+
+// Public alias for Julian Day computation — used by the Wǔ-Xíng module to
+// derive the day's earthly branch from the sexagenary cycle.
+export function jdFromDate(dd, mm, yy) { return _jdFromDate(dd, mm, yy); }

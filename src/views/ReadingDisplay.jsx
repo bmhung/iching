@@ -3,6 +3,7 @@ import HexCard from "../components/HexCard.jsx";
 import TrigramSummary from "../components/TrigramSummary.jsx";
 import CastCalculation from "../components/CastCalculation.jsx";
 import TiYongPanel from "../components/TiYongPanel.jsx";
+import WuxingPanel from "../components/WuxingPanel.jsx";
 import HexCommentary from "../components/HexCommentary.jsx";
 import HexDetailCard from "../components/HexDetailCard.jsx";
 import CopyForAIButton from "../components/CopyForAIButton.jsx";
@@ -142,6 +143,15 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
           { label: t.result.transformed, labelZh: t.result.transformedZh, analysis: tiYongTransformed },
         ]}
       />
+
+      <div className="mt-4">
+        <WuxingPanel
+          tiTrigram={tiYongOriginal.tiTrigram}
+          yongTrigram={tiYongOriginal.yongTrigram}
+          reading={reading}
+          t={t}
+        />
+      </div>
     </div>
   );
 }
