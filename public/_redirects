@@ -1,0 +1,4 @@
+# SPA fallback — the app uses React state for view routing rather than URL
+# routes, so this only matters if a user lands on a non-root path (e.g. via
+# a bookmark to /cast). 200 keeps the URL bar intact.
+/*  /index.html  200

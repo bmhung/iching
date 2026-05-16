@@ -1,0 +1,9 @@
+# Cloudflare Pages config. Lets `wrangler pages deploy` work without flags.
+# Environment variables (VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY) are set
+# in the Cloudflare dashboard under the Pages project's Settings → Environment
+# variables — they're inlined at build time by Vite, so they must exist when
+# the build runs.
+
+name = "plum-blossom-iching"
+compatibility_date = "2024-12-01"
+pages_build_output_dir = "dist"
