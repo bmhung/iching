@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { castTime, castNumber, castSound, castSpont } from "../domain/casting.js";
+import { castTime, castNumber, castSound, castSpont, castNumberTime } from "../domain/casting.js";
 import { solarToLunar, yearBranchOf } from "../domain/lunar.js";
 import { saveReading } from "../storage/local.js";
 import { notifyLocalWrite } from "../sync/engine.js";
@@ -10,6 +10,7 @@ export default function CastView({ t, lang, reading, setReading }) {
   const [firstNumber, setFirstNumber]   = useState("");
   const [secondNumber, setSecondNumber] = useState("");
   const [text, setText] = useState("");
+  const [singleNumber, setSingleNumber] = useState("");
   const [question, setQuestion] = useState("");
   const [error, setError] = useState("");
   const [saveStatus, setSaveStatus] = useState(null); // null | 'saving' | 'saved' | 'error' | 'no-storage'
@@ -65,6 +66,13 @@ export default function CastView({ t, lang, reading, setReading }) {
     } else if (method === "sound") {
       castResult = castSound(text);
       if (!castResult) { setError(t.cast.tooShort); return; }
+    } else if (method === "numberTime") {
+      const parsedNumber = parseInt(singleNumber);
+      const parsedHour   = parseInt(hour);
+      if (!parsedNumber || parsedNumber < 1 || !Number.isFinite(parsedHour) || parsedHour < 0 || parsedHour > 23) {
+        setError(t.cast.enterNums); return;
+      }
+      castResult = castNumberTime(parsedNumber, parsedHour);
     } else if (method === "spont") castResult = castSpont();
     if (castResult) {
       castResult.question = question;
@@ -78,7 +86,7 @@ export default function CastView({ t, lang, reading, setReading }) {
   }
 
   function reset() {
-    setReading(null); setMethod(null); setFirstNumber(""); setSecondNumber(""); setText(""); setError("");
+    setReading(null); setMethod(null); setFirstNumber(""); setSecondNumber(""); setText(""); setSingleNumber(""); setError("");
     setSaveStatus(null);
     resetNow();
   }
@@ -86,10 +94,11 @@ export default function CastView({ t, lang, reading, setReading }) {
   if (reading) return <ReadingDisplay t={t} lang={lang} reading={reading} onAgain={reset} saveStatus={saveStatus} />;
 
   const methods = [
-    { id: "time",   icon: "時", title: t.cast.time,   zh: t.cast.timeZh,   desc: t.cast.timeDesc   },
-    { id: "number", icon: "數", title: t.cast.number, zh: t.cast.numberZh, desc: t.cast.numberDesc },
-    { id: "sound",  icon: "聲", title: t.cast.sound,  zh: t.cast.soundZh,  desc: t.cast.soundDesc  },
-    { id: "spont",  icon: "應", title: t.cast.spont,  zh: t.cast.spontZh,  desc: t.cast.spontDesc  },
+    { id: "time",       icon: "時", title: t.cast.time,       zh: t.cast.timeZh,       desc: t.cast.timeDesc       },
+    { id: "number",     icon: "數", title: t.cast.number,     zh: t.cast.numberZh,     desc: t.cast.numberDesc     },
+    { id: "sound",      icon: "聲", title: t.cast.sound,      zh: t.cast.soundZh,      desc: t.cast.soundDesc      },
+    { id: "numberTime", icon: "時數", title: t.cast.numberTime, zh: t.cast.numberTimeZh, desc: t.cast.numberTimeDesc },
+    { id: "spont",      icon: "應", title: t.cast.spont,      zh: t.cast.spontZh,      desc: t.cast.spontDesc      },
   ];
 
   return (
@@ -200,6 +209,28 @@ export default function CastView({ t, lang, reading, setReading }) {
               <label className="block text-sm text-stone-600 mb-1.5">{t.cast.text}</label>
               <input value={text} onChange={e => setText(e.target.value)} placeholder={t.cast.textPh}
                 className="w-full px-3 py-2 bg-stone-50 border border-stone-300 focus:border-rose-900 outline-none rounded" />
+            </div>
+          )}
+
+          {method === "numberTime" && (
+            <div className="mb-4">
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-sm text-stone-600 mb-1.5">{t.cast.number}</label>
+                  <input type="number" value={singleNumber} onChange={e => setSingleNumber(e.target.value)} min="1"
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-300 focus:border-rose-900 outline-none rounded" />
+                </div>
+                <div>
+                  <div className="flex items-baseline justify-between mb-1.5">
+                    <label className="block text-sm text-stone-600">{dtLabels.hour}</label>
+                    <button type="button" onClick={() => setHour(new Date().getHours())} className="text-[11px] text-stone-500 hover:text-rose-900 transition-colors">
+                      {dtLabels.useNow}
+                    </button>
+                  </div>
+                  <input type="number" min="0" max="23" value={hour} onChange={e => setHour(e.target.value)}
+                    className="w-full px-3 py-2 bg-stone-50 border border-stone-300 focus:border-rose-900 outline-none rounded" />
+                </div>
+              </div>
             </div>
           )}
 

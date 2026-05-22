@@ -49,6 +49,16 @@ export default function CastCalculation({ reading, lang, t }) {
     upperEq    = { expr: `${firstHalf}`,                       sum: firstHalf,              divisor: 8, simple: true, ...divide(firstHalf, 8, 8) };
     lowerEq    = { expr: `${secondHalf}`,                      sum: secondHalf,             divisor: 8, simple: true, ...divide(secondHalf, 8, 8) };
     changingEq = { expr: `${firstHalf} + ${secondHalf}`,       sum: firstHalf + secondHalf, divisor: 6,               ...divide(firstHalf + secondHalf, 6, 6) };
+  } else if (method === "numberTime") {
+    const { number, hour, hourBranch } = inputs;
+    const sum = number + hourBranch;
+    inputItems = [
+      { k: L.firstNumber, v: number },
+      { k: L.hour,        v: `${String(hour).padStart(2,"0")}:00 → ${t.branches[hourBranch - 1]} (${hourBranch})` },
+    ];
+    upperEq    = { expr: `${number}`,                  sum: number, divisor: 8, simple: true, ...divide(number, 8, 8) };
+    lowerEq    = { expr: `${number} + ${hourBranch}`,  sum,         divisor: 8,               ...divide(sum, 8, 8) };
+    changingEq = { expr: `${number} + ${hourBranch}`,  sum,         divisor: 6,               ...divide(sum, 6, 6) };
   }
 
   function EqRow({ label, equation, trigram }) {

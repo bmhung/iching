@@ -29,6 +29,8 @@ export default function ReadingDisplay({ t, lang, reading, onAgain, saveStatus }
     ? `${reading.inputs.firstNumber} , ${reading.inputs.secondNumber}`
     : reading.method === "sound"
     ? `"${reading.inputs.text}" (${reading.inputs.length})`
+    : reading.method === "numberTime"
+    ? `${reading.inputs.number} · ${t.branches[reading.inputs.hourBranch - 1]}時`
     : "—";
 
   return (

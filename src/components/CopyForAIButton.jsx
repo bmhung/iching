@@ -44,6 +44,8 @@ function buildPrompt(reading, lang, t) {
     inputsLine = `${inputs.firstNumber}, ${inputs.secondNumber}`;
   } else if (method === "sound") {
     inputsLine = `"${inputs.text}" (${inputs.length} chars; halves ${inputs.firstHalf} + ${inputs.secondHalf})`;
+  } else if (method === "numberTime") {
+    inputsLine = `number ${inputs.number} + hour ${String(inputs.hour).padStart(2,"0")}:00 → ${t.branches[inputs.hourBranch - 1]}(${inputs.hourBranch})`;
   } else if (method === "spont") {
     inputsLine = "(spontaneous random cast)";
   }

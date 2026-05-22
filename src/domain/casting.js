@@ -81,3 +81,23 @@ export function castSpont() {
     inputs: {},
   };
 }
+
+// Single-number + hour cast (external-response by number with time).
+//   upper        = number % 8
+//   lower        = (number + hourBranch) % 8
+//   changingLine = (number + hourBranch) % 6
+// where hourBranch is the earthly branch (1..12) for the given hour (0..23).
+export function castNumberTime(number, hour) {
+  if (hour === undefined || hour === null) hour = new Date().getHours();
+  const hourToBranch = [1,2,2,3,3,4,4,5,5,6,6,7,7,8,8,9,9,10,10,11,11,12,12,1];
+  const hourBranch = hourToBranch[hour] ?? 1;
+  const sum = number + hourBranch;
+  const upper        = (number % 8 === 0) ? 8 : number % 8;
+  const lower        = (sum % 8 === 0)    ? 8 : sum % 8;
+  const changingLine = (sum % 6 === 0)    ? 6 : sum % 6;
+  return {
+    upper, lower, changingLine,
+    method: "numberTime",
+    inputs: { number, hour, hourBranch },
+  };
+}
